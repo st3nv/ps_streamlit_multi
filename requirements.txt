@@ -1,10 +1,7 @@
 streamlit
-zipfile
 pandas
 numpy
 seaborn
 matplotlib
 scipy
 unidecode
-shutil
-os
