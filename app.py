@@ -302,16 +302,23 @@ if uploaded_file:
     # Avg response time
     toc.h2("2. Average Reaction Time")
     
+    # checkbox to whether or not delete incorrect responses
+    delete_incorrect = st.checkbox("Delete incorrect responses")
+    if delete_incorrect:
+        df_all_parsed_used = df_all_parsed[df_all_parsed['corr'] == 1]
+    else:
+        df_all_parsed_used = df_all_parsed
+    
     # Broken down by block
     toc.h3("By Block")
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_block_rt = df_agg_analysis.groupby('block')['rt'].mean().reset_index().sort_values('block', ascending=True)
+        df_block_rt = df_all_parsed_used.groupby('block')['rt'].mean().reset_index().sort_values('block', ascending=True)
         st.dataframe(df_block_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='block', y='rt', palette=color_p, ax=ax, capsize=0.1)
+        sns.barplot(data=df_all_parsed_used, x='block', y='rt', palette=color_p, ax=ax, capsize=0.1)
         ax.set_xlabel('Block', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by Block (agg over participants)')
@@ -321,7 +328,7 @@ if uploaded_file:
     with col3:
         # show all participants' RT by block
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        df_agg_analysis_plot = df_agg_analysis.sort_values('block')
+        df_agg_analysis_plot = df_all_parsed_used.sort_values('block')
         sns.barplot(data=df_agg_analysis_plot, x='block', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Block', fontsize=14)
@@ -336,11 +343,11 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_wm_rt = df_agg_analysis.groupby('wm')['rt'].mean().reset_index().sort_values('wm', ascending=True)
+        df_wm_rt = df_all_parsed_used.groupby('wm')['rt'].mean().reset_index().sort_values('wm', ascending=True)
         st.dataframe(df_wm_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='wm', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
+        sns.barplot(data=df_all_parsed_used, x='wm', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
         ax.set_xlabel('Single vs WM', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by Single vs WM (agg over participants)')
@@ -350,7 +357,7 @@ if uploaded_file:
     with col3:
         # show all participants' RT by Single vs WM
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        df_agg_analysis_plot = df_agg_analysis.sort_values('wm')
+        df_agg_analysis_plot = df_all_parsed_used.sort_values('wm')
         sns.barplot(data=df_agg_analysis_plot, x='wm', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Single vs WM', fontsize=14)
@@ -365,11 +372,11 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_2d3d_rt = df_agg_analysis.groupby('dimension')['rt'].mean().reset_index().sort_values('dimension', ascending=True)
+        df_2d3d_rt = df_all_parsed_used.groupby('dimension')['rt'].mean().reset_index().sort_values('dimension', ascending=True)
         st.dataframe(df_2d3d_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='dimension', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
+        sns.barplot(data=df_all_parsed_used, x='dimension', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
         ax.set_xlabel('2D vs 3D', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by 2D vs 3D (agg over participants)')
@@ -380,7 +387,7 @@ if uploaded_file:
     with col3:
         # show all participants' RT by 2D vs 3D
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        df_agg_analysis_plot = df_agg_analysis.sort_values('dimension')
+        df_agg_analysis_plot = df_all_parsed_used.sort_values('dimension')
         sns.barplot(data=df_agg_analysis_plot, x='dimension', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('2D vs 3D', fontsize=14)
@@ -394,11 +401,11 @@ if uploaded_file:
     toc.h3("By Angular Difference")
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_angle_rt = df_agg_analysis.groupby('angle')['rt'].mean().reset_index().sort_values('angle', ascending=True)
+        df_angle_rt = df_all_parsed_used.groupby('angle')['rt'].mean().reset_index().sort_values('angle', ascending=True)
         st.dataframe(df_angle_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='angle', y='rt', palette=color_p, ax=ax, capsize=0.1)
+        sns.barplot(data=df_all_parsed_used, x='angle', y='rt', palette=color_p, ax=ax, capsize=0.1)
         ax.set_xlabel('Angle', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by Angular Difference (agg over participants)')
@@ -408,7 +415,7 @@ if uploaded_file:
     with col3:
         # show all participants' RT by angular difference
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        df_agg_analysis_plot = df_agg_analysis.sort_values('angle')
+        df_agg_analysis_plot = df_all_parsed_used.sort_values('angle')
         sns.barplot(data=df_agg_analysis_plot, x='angle', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Angle', fontsize=14)
