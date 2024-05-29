@@ -616,10 +616,16 @@ if uploaded_file:
     # Vividness vs Performance
     toc.h2("5. Vividness vs Performance")
     
-    st.write("Count of vividness responses:")
-    st.write(df_all_parsed['vivid_response'].value_counts().reset_index().sort_values('vivid_response').reset_index(drop=True))
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("Count of vividness responses:")
+        st.write(df_all_parsed['vivid_response'].value_counts().reset_index().sort_values('vivid_response').reset_index(drop=True))
     
-    
+    with col2:
+        st.write("Count of vividness responses by participants:")
+        df_vivid_cnt_pivot = df_all_parsed.pivot_table(index='participant', columns='vivid_response', values='idx', aggfunc='count').reset_index().fillna(0)
+        st.dataframe(df_vivid_cnt_pivot)
+        
     # Accuracy vs Vivid Response
     toc.h3("5.1 Accuracy")
     
