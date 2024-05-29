@@ -186,7 +186,7 @@ if uploaded_file:
     toc.h2("1. Average Accuracy")
 
     # Broken down by block
-    toc.h3("By Block")
+    toc.h3("1.1 By Block")
     col1, col2, col3 = st.columns(3)
     
     df_block_accuracy = df_all_parsed.groupby('block')['corr'].agg(['mean', 'std']).reset_index().sort_values('block', ascending=True)
@@ -217,7 +217,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # Broken down by Single vs WM
-    toc.h3("By Single vs WM")
+    toc.h3("1.2 By Single vs WM")
     col1, col2, col3 = st.columns(3)
     df_all_parsed_for_wm = df_all_parsed.copy()
     df_all_parsed_for_wm['wm'] = df_all_parsed_for_wm['wm'].map({True: 'WM', False: 'Single'})
@@ -251,7 +251,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # Broken down by 2D vs 3D
-    toc.h3("By 2D vs 3D")
+    toc.h3("1.3 By 2D vs 3D")
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -282,7 +282,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # By angular difference
-    toc.h3("By Angular Difference")
+    toc.h3("1.4 By Angular Difference")
     col1, col2, col3 = st.columns(3)
     with col1:
         df_all_parsed_for_angle = df_all_parsed.copy()
@@ -321,7 +321,7 @@ if uploaded_file:
     
     
     # Broken down by block
-    toc.h3("By Block")
+    toc.h3("2.1 By Block")
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -351,7 +351,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # Broken down by Single vs WM
-    toc.h3("By Single vs WM")
+    toc.h3("2.2 By Single vs WM")
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -386,7 +386,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # Broken down by 2D vs 3D
-    toc.h3("By 2D vs 3D")
+    toc.h3("2.3 By 2D vs 3D")
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -418,7 +418,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # By angular difference
-    toc.h3("By Angular Difference")
+    toc.h3("2.4 By Angular Difference")
     col1, col2, col3 = st.columns(3)
     with col1:
         df_angle_rt = df_all_parsed_rt.groupby('angle')['rt'].agg(['mean', 'std']).reset_index().sort_values('angle', ascending=True)
@@ -448,7 +448,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # By correct vs incorrect
-    toc.h3("By Correct vs Incorrect")
+    toc.h3("2.5 By Correct vs Incorrect")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -490,7 +490,7 @@ if uploaded_file:
     col1, col2 = st.columns(2)
     with col1:  
         # Accuracy
-        toc.h3("Accuracy")
+        toc.h3("3.1 Accuracy")
         # running average accuracy over idx 
         df_all_parsed['running_avg_accuracy'] = df_all_parsed.groupby('participant')['corr'].transform(lambda x: x.expanding().mean())
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -513,7 +513,7 @@ if uploaded_file:
         
     with col2:
         # RT
-        toc.h3("Reaction Time")
+        toc.h3("3.2 Reaction Time")
         # running average RT over idx 
         df_all_parsed['running_avg_rt'] = df_all_parsed.groupby('participant')['rt'].transform(lambda x: x.expanding().mean())
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -541,7 +541,7 @@ if uploaded_file:
     st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response').reset_index(drop=True))
     
     # Accuracy vs Strategy Response
-    toc.h3("Accuracy")
+    toc.h3("4.1 Accuracy")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -575,7 +575,7 @@ if uploaded_file:
 
         
     # RT vs Strategy Response
-    toc.h3("Reaction Time")
+    toc.h3("4.2 Reaction Time")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -614,7 +614,7 @@ if uploaded_file:
     
     
     # Accuracy vs Vivid Response
-    toc.h3("Accuracy")
+    toc.h3("5.1 Accuracy")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -647,7 +647,7 @@ if uploaded_file:
         st.pyplot(fig)
         
     # RT vs Vivid Response
-    toc.h3("Reaction Time")
+    toc.h3("5.2 Reaction Time")
     
     col1, col2, col3 = st.columns(3)
     with col1:
