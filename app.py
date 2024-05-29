@@ -316,6 +316,44 @@ if uploaded_file:
         sns.despine()
         st.pyplot(fig)
         
+    st.write("Separate by wm and single")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        df_angle_accuracy = df_all_parsed.groupby(['angle', 'wm'])['corr'].agg(['mean', 'std']).reset_index().sort_values('angle', ascending=True)
+        df_angle_accuracy['wm'] = df_angle_accuracy['wm'].map({True: 'WM', False: 'Single'})
+        st.dataframe(df_angle_accuracy)
+    with col2:
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
+        df_agg_analysis_plot = df_all_parsed.sort_values('angle')
+        df_agg_analysis_plot_single = df_agg_analysis_plot[df_agg_analysis_plot['wm'] == False]
+        sns.lineplot(data=df_agg_analysis_plot_single, x='angle', y='corr', hue='participant', alpha = 0.9, palette=color_p, ax=ax, err_style=None, marker='o', markersize=10, linewidth=3)
+        ax.margins(x=0.2, y=0.1)
+        ax.set_xticks([0, 60, 120, 180])
+        plt.ylim(0.2, 1.2)
+        plt.legend(bbox_to_anchor=(0.8, 0.9), loc=2, borderaxespad=0.)
+        ax.set_xlabel('Angle', fontsize=14)
+        ax.set_ylabel('Accuracy', fontsize=14)
+        plt.title('Accuracy by Angular Difference (Single)')
+        # remove top and right borders
+        sns.despine()
+        st.pyplot(fig)
+    
+    with col3:
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
+        df_agg_analysis_plot = df_all_parsed.sort_values('angle')
+        df_agg_analysis_plot_wm = df_agg_analysis_plot[df_agg_analysis_plot['wm'] == True]
+        sns.lineplot(data=df_agg_analysis_plot_wm, x='angle', y='corr', hue='participant', alpha = 0.9, palette=color_p, ax=ax, err_style=None, marker='o', markersize=10, linewidth=3)
+        ax.margins(x=0.2, y=0.1)
+        ax.set_xticks([0, 60, 120, 180])
+        plt.ylim(0.2, 1.2)
+        plt.legend(bbox_to_anchor=(0.8, 0.9), loc=2, borderaxespad=0.)
+        ax.set_xlabel('Angle', fontsize=14)
+        ax.set_ylabel('Accuracy', fontsize=14)
+        plt.title('Accuracy by Angular Difference (WM)')
+        # remove top and right borders
+        sns.despine()
+        st.pyplot(fig)    
+        
     # Avg response time
     toc.h2("2. Average Reaction Time")
     
@@ -439,10 +477,51 @@ if uploaded_file:
         # sns.barplot(data=df_agg_analysis_plot, x='angle', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None)
         sns.lineplot(data=df_agg_analysis_plot, x='angle', y='rt', hue='participant', alpha = 0.9, palette=color_p, ax=ax, err_style=None, marker='o', markersize=10, linewidth=3)
         ax.margins(x=0.2, y=0.1)
+        ax.set_xticks([0, 60, 120, 180])
         plt.legend(bbox_to_anchor=(0.8, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Angle', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('RT by Angular Difference (breakdown by all participants)')
+        # remove top and right borders
+        sns.despine()
+        st.pyplot(fig)
+        
+    st.write("Separate by wm and single")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        df_angle_rt = df_all_parsed_rt.groupby(['angle', 'wm'])['rt'].agg(['mean', 'std']).reset_index().sort_values('angle', ascending=True)
+        df_angle_rt['wm'] = df_angle_rt['wm'].map({True: 'WM', False: 'Single'})
+        st.dataframe(df_angle_rt)
+    with col2:
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
+        df_agg_analysis_plot = df_all_parsed_rt.sort_values('angle')
+        df_agg_analysis_plot_single = df_agg_analysis_plot[df_agg_analysis_plot['wm'] == False]
+        # sns.barplot(data=df_agg_analysis_plot, x='angle', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None)
+        sns.lineplot(data=df_agg_analysis_plot_single, x='angle', y='rt', hue='participant', alpha = 0.9, palette=color_p, ax=ax, err_style=None, marker='o', markersize=10, linewidth=3)
+        ax.margins(x=0.2, y=0.1)
+        ax.set_xticks([0, 60, 120, 180])
+        plt.legend(bbox_to_anchor=(0.8, 0.3), loc=2, borderaxespad=0.)
+        ax.set_xlabel('Angle', fontsize=14)
+        ax.set_ylabel('RT', fontsize=14)
+        plt.ylim(0.2, 3.2)
+        plt.title('RT by Angular Difference (Single)')
+        # remove top and right borders
+        sns.despine()
+        st.pyplot(fig)
+        
+    with col3:
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
+        df_agg_analysis_plot = df_all_parsed_rt.sort_values('angle')
+        df_agg_analysis_plot_wm = df_agg_analysis_plot[df_agg_analysis_plot['wm'] == True]
+        # sns.barplot(data=df_agg_analysis_plot, x='angle', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None)
+        sns.lineplot(data=df_agg_analysis_plot_wm, x='angle', y='rt', hue='participant', alpha = 0.9, palette=color_p, ax=ax, err_style=None, marker='o', markersize=10, linewidth=3)
+        ax.margins(x=0.2, y=0.1)
+        ax.set_xticks([0, 60, 120, 180])
+        plt.ylim(0.2, 3.2)
+        plt.legend(bbox_to_anchor=(0.8, 0.3), loc=2, borderaxespad=0.)
+        ax.set_xlabel('Angle', fontsize=14)
+        ax.set_ylabel('RT', fontsize=14)
+        plt.title('RT by Angular Difference (WM)')
         # remove top and right borders
         sns.despine()
         st.pyplot(fig)
