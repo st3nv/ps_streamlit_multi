@@ -189,7 +189,7 @@ if uploaded_file:
     toc.h3("By Block")
     col1, col2, col3 = st.columns(3)
     
-    df_block_accuracy = df_agg_analysis.groupby('block')['accuracy'].agg(['mean', 'std']).reset_index().sort_values('block', ascending=True)
+    df_block_accuracy = df_all_parsed.groupby('block')['corr'].agg(['mean', 'std']).reset_index().sort_values('block', ascending=True)
     with col1:
         st.dataframe(df_block_accuracy)
     with col2:
@@ -237,6 +237,7 @@ if uploaded_file:
         # show all participants' accuracy by Single vs WM
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_agg_analysis.sort_values('wm')
+        df_agg_analysis_plot.replace({'wm': {True: 'WM', False: 'Single'}}, inplace=True)
         sns.barplot(data=df_agg_analysis_plot, x='wm', y='accuracy', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Single vs WM', fontsize=14)
@@ -318,7 +319,8 @@ if uploaded_file:
         st.dataframe(df_block_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed_rt, x='block', y='rt', palette=color_p, ax=ax, capsize=0.1)
+        df_all_parsed_rt_for_block = df_all_parsed_rt.sort_values('block')
+        sns.barplot(data=df_all_parsed_rt_for_block, x='block', y='rt', palette=color_p, ax=ax, capsize=0.1)
         ax.set_xlabel('Block', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by Block (agg over participants)')
@@ -344,10 +346,13 @@ if uploaded_file:
     
     with col1:
         df_wm_rt = df_all_parsed_rt.groupby('wm')['rt'].agg(['mean', 'std']).reset_index().sort_values('wm', ascending=True)
+        df_wm_rt.replace({'wm': {True: 'WM', False: 'Single'}}, inplace=True)
         st.dataframe(df_wm_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed_rt, x='wm', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
+        df_all_parsed_rt_plot = df_all_parsed_rt.copy()
+        df_all_parsed_rt_plot['wm'] = df_all_parsed_rt_plot['wm'].map({True: 'WM', False: 'Single'})
+        sns.barplot(data=df_all_parsed_rt_plot, x='wm', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
         ax.set_xlabel('Single vs WM', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
         plt.title('Average RT by Single vs WM (agg over participants)')
@@ -358,6 +363,7 @@ if uploaded_file:
         # show all participants' RT by Single vs WM
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_all_parsed_rt.sort_values('wm')
+        df_agg_analysis_plot.replace({'wm': {True: 'WM', False: 'Single'}}, inplace=True)
         sns.barplot(data=df_agg_analysis_plot, x='wm', y='rt', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
         plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Single vs WM', fontsize=14)
@@ -435,7 +441,9 @@ if uploaded_file:
         st.dataframe(df_corr_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='corr', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
+        df_all_parsed_cor_incor = df_all_parsed.copy()
+        df_all_parsed_cor_incor['corr'] = df_all_parsed_cor_incor['corr'].map({1: 'Correct', 0: 'Incorrect'})
+        sns.barplot(data=df_all_parsed_cor_incor, x='corr', y='rt', palette=color_p, ax=ax, capsize=0.05, width=0.4)
         # add error bars
         ax.set_xlabel('Correct vs Incorrect', fontsize=14)
         ax.set_ylabel('RT', fontsize=14)
