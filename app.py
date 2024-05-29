@@ -537,8 +537,15 @@ if uploaded_file:
     # strategy response vs performance
     toc.h2("4. Strategy vs Performance")
     
-    st.write("Count of strategy responses:")
-    st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response').reset_index(drop=True))
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("Count of strategy responses:")
+        st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response').reset_index(drop=True))
+        
+    with col2:
+        st.write("Count of vividness responses by participants:")
+        df_strategy_cnt_pivot = df_all_parsed.pivot_table(index='participant', columns='strategy_response', values='idx', aggfunc='count').reset_index().fillna(0)
+        st.dataframe(df_strategy_cnt_pivot)
     
     # Accuracy vs Strategy Response
     toc.h3("4.1 Accuracy")
