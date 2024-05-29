@@ -520,7 +520,7 @@ if uploaded_file:
     toc.h2("4. Strategy vs Performance")
     
     st.write("Count of strategy responses:")
-    st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response'))
+    st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response').reset_index(drop=True))
     
     # Accuracy vs Strategy Response
     toc.h3("Accuracy")
@@ -592,7 +592,7 @@ if uploaded_file:
     toc.h2("5. Vividness vs Performance")
     
     st.write("Count of vividness responses:")
-    st.write(df_all_parsed['vivid_response'].value_counts().reset_index().sort_values('vivid_response'))
+    st.write(df_all_parsed['vivid_response'].value_counts().reset_index().sort_values('vivid_response').reset_index(drop=True))
     
     
     # Accuracy vs Vivid Response
