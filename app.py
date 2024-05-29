@@ -622,7 +622,7 @@ if uploaded_file:
         st.write(df_all_parsed['strategy_response'].value_counts().reset_index().sort_values('strategy_response').reset_index(drop=True))
         
     with col2:
-        st.write("Count of vividness responses by participants:")
+        st.write("Count of strategy responses by participants:")
         df_strategy_cnt_pivot = df_all_parsed.pivot_table(index='participant', columns='strategy_response', values='idx', aggfunc='count').reset_index().fillna(0)
         st.dataframe(df_strategy_cnt_pivot)
     
