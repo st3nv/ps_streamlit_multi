@@ -189,12 +189,14 @@ if uploaded_file:
     toc.h3("By Block")
     col1, col2, col3 = st.columns(3)
     
-    df_block_accuracy = df_agg_analysis.groupby('block')['accuracy'].mean().reset_index().sort_values('block', ascending=True)
+    df_block_accuracy = df_agg_analysis.groupby('block')['accuracy'].agg(['mean', 'std']).reset_index().sort_values('block', ascending=True)
     with col1:
         st.dataframe(df_block_accuracy)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(x='block', y='corr', data=df_all_parsed, palette=color_p, ax=ax, capsize=0.1)
+        # sort the df by block
+        df_all_parsed_block_sorted = df_all_parsed.sort_values('block')
+        sns.barplot(x='block', y='corr', data=df_all_parsed_block_sorted, palette=color_p, ax=ax, capsize=0.1)
         ax.set_xlabel('Block', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Average Accuracy by Block (agg over participants)')
@@ -206,7 +208,7 @@ if uploaded_file:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_agg_analysis.sort_values('block')
         sns.barplot(data=df_agg_analysis_plot, x='block', y='accuracy', hue='participant', palette= color_p, ax=ax, errorbar=None)
-        plt.legend(bbox_to_anchor=(0.7, 1), loc=2, borderaxespad=0.)
+        plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Block', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Accuracy by Block (breakdown by all participants)')
@@ -217,14 +219,14 @@ if uploaded_file:
     # Broken down by Single vs WM
     toc.h3("By Single vs WM")
     col1, col2, col3 = st.columns(3)
-    
-    df_agg_analysis['wm'] = df_agg_analysis['wm'].map({True: 'WM', False: 'Single'})
-    df_wm_accuracy = df_agg_analysis.groupby('wm')['accuracy'].mean().reset_index().sort_values('wm', ascending=True)
+    df_all_parsed_for_wm = df_all_parsed.copy()
+    df_all_parsed_for_wm['wm'] = df_all_parsed_for_wm['wm'].map({True: 'WM', False: 'Single'})
+    df_wm_accuracy = df_all_parsed_for_wm.groupby('wm')['corr'].agg(['mean', 'std']).reset_index().sort_values('wm', ascending=True)
     with col1:
         st.dataframe(df_wm_accuracy)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
-        sns.barplot(data=df_all_parsed, x='wm', y='corr', palette=color_p, ax=ax, capsize=0.05, width=0.4)
+        sns.barplot(data=df_all_parsed_for_wm, x='wm', y='corr', palette=color_p, ax=ax, capsize=0.05, width=0.4)
         ax.set_xlabel('Single vs WM', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Average Accuracy by Single vs WM (agg over participants)')
@@ -236,7 +238,7 @@ if uploaded_file:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_agg_analysis.sort_values('wm')
         sns.barplot(data=df_agg_analysis_plot, x='wm', y='accuracy', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
-        plt.legend(bbox_to_anchor=(0.7, 1), loc=2, borderaxespad=0.)
+        plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Single vs WM', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Accuracy by Single vs WM (breakdown by all participants)')
@@ -249,7 +251,7 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_2d3d_accuracy = df_agg_analysis.groupby('dimension')['accuracy'].mean().reset_index().sort_values('dimension', ascending=True)
+        df_2d3d_accuracy = df_all_parsed.groupby('dimension')['corr'].agg(['mean', 'std']).reset_index().sort_values('dimension', ascending=True)
         st.dataframe(df_2d3d_accuracy)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -265,7 +267,7 @@ if uploaded_file:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_agg_analysis.sort_values('dimension')
         sns.barplot(data=df_agg_analysis_plot, x='dimension', y='accuracy', hue='participant', palette= color_p, ax=ax, errorbar=None, width=0.3)
-        plt.legend(bbox_to_anchor=(0.7, 1), loc=2, borderaxespad=0.)
+        plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('2D vs 3D', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Accuracy by 2D vs 3D (breakdown by all participants)')
@@ -277,8 +279,9 @@ if uploaded_file:
     toc.h3("By Angular Difference")
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_agg_analysis['angle'] = df_agg_analysis['angle'].astype(int)
-        df_angle_accuracy = df_agg_analysis.groupby('angle')['accuracy'].mean().reset_index().sort_values('angle', ascending=True)
+        df_all_parsed_for_angle = df_all_parsed.copy()
+        df_all_parsed_for_angle['angle'] = df_all_parsed_for_angle['angle'].astype(int)
+        df_angle_accuracy = df_all_parsed_for_angle.groupby('angle')['corr'].agg(['mean', 'std']).reset_index().sort_values('angle', ascending=True)
         st.dataframe(df_angle_accuracy)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -294,7 +297,7 @@ if uploaded_file:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
         df_agg_analysis_plot = df_agg_analysis.sort_values('angle')
         sns.barplot(data=df_agg_analysis_plot, x='angle', y='accuracy', hue='participant', palette= color_p, ax=ax, errorbar=None)
-        plt.legend(bbox_to_anchor=(0.7, 1), loc=2, borderaxespad=0.)
+        plt.legend(bbox_to_anchor=(0.7, 0.3), loc=2, borderaxespad=0.)
         ax.set_xlabel('Angle', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
         plt.title('Accuracy by Angular Difference (breakdown by all participants)')
@@ -311,7 +314,7 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_block_rt = df_all_parsed_rt.groupby('block')['rt'].mean().reset_index().sort_values('block', ascending=True)
+        df_block_rt = df_all_parsed_rt.groupby('block')['rt'].agg(['mean', 'std']).reset_index().sort_values('block', ascending=True)
         st.dataframe(df_block_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -340,7 +343,7 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_wm_rt = df_all_parsed_rt.groupby('wm')['rt'].mean().reset_index().sort_values('wm', ascending=True)
+        df_wm_rt = df_all_parsed_rt.groupby('wm')['rt'].agg(['mean', 'std']).reset_index().sort_values('wm', ascending=True)
         st.dataframe(df_wm_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -369,7 +372,7 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        df_2d3d_rt = df_all_parsed_rt.groupby('dimension')['rt'].mean().reset_index().sort_values('dimension', ascending=True)
+        df_2d3d_rt = df_all_parsed_rt.groupby('dimension')['rt'].agg(['mean', 'std']).reset_index().sort_values('dimension', ascending=True)
         st.dataframe(df_2d3d_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -398,7 +401,7 @@ if uploaded_file:
     toc.h3("By Angular Difference")
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_angle_rt = df_all_parsed_rt.groupby('angle')['rt'].mean().reset_index().sort_values('angle', ascending=True)
+        df_angle_rt = df_all_parsed_rt.groupby('angle')['rt'].agg(['mean', 'std']).reset_index().sort_values('angle', ascending=True)
         st.dataframe(df_angle_rt)
     with col2:
         fig, ax = plt.subplots(figsize=(6, 4), dpi=200)
@@ -427,7 +430,7 @@ if uploaded_file:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_corr_rt = df_all_parsed.groupby('corr')['rt'].mean().reset_index().sort_values('corr', ascending=True)
+        df_corr_rt = df_all_parsed.groupby('corr')['rt'].agg(['mean', 'std']).reset_index().sort_values('corr', ascending=True)
         df_corr_rt['corr'] = df_corr_rt['corr'].map({1: 'Correct', 0: 'Incorrect'}) 
         st.dataframe(df_corr_rt)
     with col2:
@@ -512,8 +515,8 @@ if uploaded_file:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_agg_analysis['strategy_response'] = df_agg_analysis['strategy_response'].astype(int)
-        df_strategy_accuracy = df_agg_analysis.groupby('strategy_response')['accuracy'].mean().reset_index().sort_values('strategy_response', ascending=True)
+        df_all_parsed_for_strat = df_all_parsed.copy()
+        df_strategy_accuracy = df_all_parsed_for_strat.groupby('strategy_response')['corr'].agg(['mean', 'std']).reset_index().sort_values('strategy_response', ascending=True)
         st.dataframe(df_strategy_accuracy)
         
     with col2:
@@ -546,7 +549,7 @@ if uploaded_file:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_strategy_rt = df_all_parsed_rt.groupby('strategy_response')['rt'].mean().reset_index().sort_values('strategy_response', ascending=True)
+        df_strategy_rt = df_all_parsed_rt.groupby('strategy_response')['rt'].agg(['mean', 'std']).reset_index().sort_values('strategy_response', ascending=True)
         st.dataframe(df_strategy_rt)
     
     with col2:
@@ -581,8 +584,8 @@ if uploaded_file:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_agg_analysis['vivid_response'] = df_agg_analysis['vivid_response'].astype(int)
-        df_vivid_accuracy = df_agg_analysis.groupby('vivid_response')['accuracy'].mean().reset_index().sort_values('vivid_response', ascending=True)
+        df_all_parsed_for_vivid = df_all_parsed.copy()
+        df_vivid_accuracy = df_all_parsed_for_vivid.groupby('vivid_response')['corr'].agg(['mean', 'std']).reset_index().sort_values('vivid_response', ascending=True)
         st.dataframe(df_vivid_accuracy)
         
     with col2:
@@ -614,7 +617,7 @@ if uploaded_file:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        df_vivid_rt = df_all_parsed_rt.groupby('vivid_response')['rt'].mean().reset_index().sort_values('vivid_response', ascending=True)
+        df_vivid_rt = df_all_parsed_rt.groupby('vivid_response')['rt'].agg(['mean', 'std']).reset_index().sort_values('vivid_response', ascending=True)
         st.dataframe(df_vivid_rt)
         
     with col2:
