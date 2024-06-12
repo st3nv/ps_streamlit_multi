@@ -132,7 +132,7 @@ os.makedirs('temp')
 
 # Streamlit app
 st.set_page_config(layout="wide")
-st.title("Problem solving Multi Participant Analysis")
+st.title("Problem solving Multi Participant Analysis (OLD VERSION - before May 30)")
 
 uploaded_file = st.file_uploader("Upload the zipped file of the data of all participants (max 200MB)", type="zip")
 
@@ -770,6 +770,5 @@ if uploaded_file:
         sns.despine()
         st.pyplot(fig)
         
-    
-        
+
     toc.toc()
